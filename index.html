@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Hope Niagara - Young Adults Calendar</title>
+
+  <style>
+    * { box-sizing: border-box; }
+    body { margin: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; color: #222; background: #fff; line-height: 1.6; -webkit-text-size-adjust: 100%; }
+    a { color: #5e4034; text-underline-offset: 3px; }
+    button, a, summary { touch-action: manipulation; }
+    button, textarea { font: inherit; }
+    :focus-visible { outline: 3px solid #795548; outline-offset: 3px; }
+    [hidden] { display: none !important; }
+    .hero { max-width: 960px; margin: auto; padding: 36px 20px 24px; }
+    .eyebrow { display: flex; align-items: center; gap: 8px; color: #666; font-size: 14px; margin-bottom: 8px; }
+    .brand-logo { display: block; width: 60px; height: 60px; flex-shrink: 0; }
+    h1 { margin: 4px 0 12px; font-size: clamp(30px, 6vw, 44px); line-height: 1.2; letter-spacing: -1px; }
+    .subtitle { max-width: 540px; margin: 0; color: #555; }
+    .hero-link { display: inline-block; padding: 12px 0; margin-top: 4px; }
+    .calendar-section { max-width: 960px; margin: auto; padding: 0 20px 32px; }
+    .view-switch { display: flex; gap: 8px; margin-bottom: 12px; }
+    .view-switch button { flex: 1; min-height: 48px; padding: 10px 12px; border: 1px solid #ccc; border-radius: 4px; background: #fff; color: #333; cursor: pointer; }
+    .view-switch button[aria-pressed="true"] { background: #333; border-color: #333; color: white; font-weight: 600; }
+    .calendar-wrapper { height: 680px; border: 1px solid #ddd; }
+    .calendar-wrapper iframe { display: block; width: 100%; height: 100%; border: 0; }
+    .calendar-fallback { margin: 4px 0; font-size: 14px; }
+    .calendar-fallback a { display: inline-block; padding: 12px 0; }
+    .info { margin-top: 32px; border-top: 1px solid #ddd; padding-top: 24px; }
+    h2 { font-size: 24px; margin: 0 0 8px; }
+    h3 { font-size: 19px; margin: 0 0 8px; }
+    p { margin: 0 0 12px; }
+    .info p { color: #555; }
+    .subscription-options { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 32px; margin-top: 24px; }
+    .subscribe-button, .copy-button { display: inline-flex; align-items: center; justify-content: center; min-height: 48px; padding: 10px 14px; border: 1px solid #aaa; border-radius: 4px; background: white; color: #333; font-weight: 600; text-decoration: none; cursor: pointer; }
+    .subscribe-button { margin-bottom: 12px; }
+    .subscribe-button:hover, .copy-button:hover { background: #f4f4f4; }
+    ol { margin: 0; padding-left: 22px; color: #555; }
+    li + li { margin-top: 6px; }
+    .subscription-help { margin-top: 24px; }
+    summary { min-height: 48px; padding: 12px 0; cursor: pointer; font-weight: 600; }
+    .subscription-help label { display: block; margin: 8px 0; }
+    .subscription-help textarea { display: block; width: 100%; border: 1px solid #bbb; border-radius: 4px; padding: 10px; font-size: 16px; overflow-wrap: anywhere; resize: vertical; }
+    .copy-button { margin: 12px 0; }
+    .subscription-help p { margin-top: 12px; }
+    .subscription-help a { display: inline-block; padding: 8px 0; }
+    .small-note { font-size: 14px; }
+    .welcome { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 24px; align-items: center; }
+    .welcome-copy { max-width: 510px; }
+    .welcome-copy p:last-child, .welcome-action p { margin-bottom: 0; }
+    .welcome-action .subscribe-button { margin-bottom: 4px; }
+    .subscribe-button:disabled { cursor: default; color: #666; background: #fafafa; }
+    .subscription-card { min-width: 0; }
+    .subscription-card .subscribe-button { width: 100%; margin-bottom: 0; }
+    .setup-steps summary { font-size: 14px; font-weight: 500; color: #555; }
+    .setup-steps ol { padding-bottom: 12px; }
+    .subscription-help { border-top: 1px solid #eee; }
+    .subscription-help > summary { font-size: 14px; font-weight: 500; }
+    #subscribe-heading { scroll-margin-top: 20px; }
+    footer { max-width: 960px; margin: auto; padding: 20px; color: #666; font-size: 13px; }
+    .visually-hidden { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+    @media (max-width: 700px) {
+      .hero { padding: 24px 16px 16px; }
+      .calendar-section { padding: 0 12px 24px; }
+      .calendar-wrapper { height: 420px; height: clamp(360px, 55svh, 460px); }
+      .subscription-options { grid-template-columns: 1fr; gap: 16px; }
+      .subscription-card + .subscription-card { border-top: 1px solid #eee; padding-top: 16px; }
+      .welcome { grid-template-columns: 1fr; gap: 16px; }
+      .info { margin-top: 24px; padding: 24px 4px 0; }
+      .subscribe-button, .copy-button { width: 100%; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="hero">
+
+    <div class="eyebrow">
+      <img class="brand-logo" src="HopeSmallLogo.jpg" alt="" width="60" height="60">
+      <span>Hope Niagara Young Adults</span>
+    </div>
+
+    <h1>
+      What's happening.
+    </h1>
+
+    <p class="subtitle">
+      Upcoming gatherings and events with Young Adults.
+    </p>
+
+    <a class="hero-link" href="#subscribe-heading">Subscribe to the calendar ↓</a>
+
+  </header>
+
+
+  <main class="calendar-section">
+
+    <div class="calendar-card">
+
+      <div class="view-switch" role="group" aria-label="Calendar view" hidden>
+        <button type="button" data-view="AGENDA" aria-pressed="true">Upcoming events</button>
+        <button type="button" data-view="MONTH" aria-pressed="false">Month</button>
+      </div>
+      <div class="calendar-wrapper">
+        <iframe id="events-calendar" title="Young Adults upcoming events"
+          src="https://calendar.google.com/calendar/embed?mode=AGENDA&amp;ctz=America%2FToronto&amp;showTitle=0&amp;showPrint=0&amp;showCalendars=0&amp;showTabs=0&amp;showTz=0&amp;src=a695850648b5ee85c394014f49b84228289fd2c40ee99bf6a668432cee709ed5%40group.calendar.google.com&amp;color=%23B31412">
+        </iframe>
+      </div>
+      <p class="calendar-fallback"><a href="https://calendar.google.com/calendar/embed?src=a695850648b5ee85c394014f49b84228289fd2c40ee99bf6a668432cee709ed5%40group.calendar.google.com&amp;ctz=America%2FToronto" target="_blank" rel="noopener noreferrer">Open in Google Calendar ↗<span class="visually-hidden"> (opens in a new tab)</span></a></p>
+
+    </div>
+
+
+    <section class="info welcome" aria-labelledby="new-here-heading">
+      <div class="welcome-copy">
+        <h2 id="new-here-heading">New here?</h2>
+        <p>Meet new people, build friendships, and grow in faith with Hope Niagara Young Adults.</p>
+        <p class="small-note">Tap an event above for the time, location, and what to bring.</p>
+      </div>
+      <div class="welcome-action">
+        <!-- Replace with an anchor linking to the WhatsApp invite when available. -->
+        <button id="whatsapp-link" class="subscribe-button" type="button" disabled
+          aria-describedby="whatsapp-status">Join our WhatsApp group</button>
+        <p id="whatsapp-status" class="small-note">Invite link coming soon.</p>
+      </div>
+    </section>
+
+    <section class="info" aria-labelledby="subscribe-heading">
+
+      <h2 id="subscribe-heading">Stay in the loop.</h2>
+
+      <p>
+        Add YA events to your calendar. Updates sync automatically.
+      </p>
+
+      <div class="subscription-options">
+        <article class="subscription-card">
+          <h3>Google Calendar</h3>
+          <p class="small-note">Set up on a computer, then view on your phone.</p>
+          <a class="subscribe-button"
+            href="https://calendar.google.com/calendar/r?cid=a695850648b5ee85c394014f49b84228289fd2c40ee99bf6a668432cee709ed5%40group.calendar.google.com"
+            target="_blank" rel="noopener noreferrer">Add to Google Calendar <span class="visually-hidden">(opens in a new tab)</span></a>
+          <details class="setup-steps">
+            <summary>How to subscribe</summary>
+            <ol>
+            <li>Open the link on a computer and sign in to your Google account.</li>
+            <li>Confirm <strong>Add</strong> when Google Calendar prompts you.</li>
+            <li>On your phone, open Google Calendar with the same account and make sure this calendar is checked in the menu.</li>
+            </ol>
+          </details>
+        </article>
+
+        <article class="subscription-card">
+          <h3>Apple Calendar</h3>
+          <p class="small-note">For iPhone, iPad, and Mac.</p>
+          <a class="subscribe-button"
+            href="webcal://calendar.google.com/calendar/ical/a695850648b5ee85c394014f49b84228289fd2c40ee99bf6a668432cee709ed5%40group.calendar.google.com/public/basic.ics">Subscribe in Apple Calendar</a>
+          <details class="setup-steps">
+            <summary>How to subscribe</summary>
+            <ol>
+            <li>Tap the link on your Apple device and allow it to open Calendar.</li>
+            <li>Follow the prompts to confirm the subscription.</li>
+            <li>Choose <strong>iCloud</strong> if offered to see it across your Apple devices, then save.</li>
+            </ol>
+          </details>
+        </article>
+      </div>
+
+      <details class="subscription-help">
+        <summary>Need to add it manually?</summary>
+        <label for="calendar-feed">Copy this calendar subscription URL:</label>
+        <textarea id="calendar-feed" readonly rows="4" spellcheck="false">https://calendar.google.com/calendar/ical/a695850648b5ee85c394014f49b84228289fd2c40ee99bf6a668432cee709ed5%40group.calendar.google.com/public/basic.ics</textarea>
+        <button class="copy-button" id="copy-feed" type="button" hidden>Copy calendar link</button>
+        <p id="copy-status" role="status"></p>
+        <p><strong>Google:</strong> On a computer, open Google Calendar. Next to <strong>Other calendars</strong>, click <strong>+</strong>, then <strong>From URL</strong>. Paste the link and click <strong>Add calendar</strong>.</p>
+        <p><strong>iPhone or iPad:</strong> In Calendar, open <strong>Calendars → Add Calendar → Add Subscription Calendar</strong>. Paste the link, tap <strong>Find</strong> (or <strong>Subscribe</strong> on older versions), then finish saving.</p>
+        <p><strong>Mac:</strong> In Calendar, choose <strong>File → New Calendar Subscription</strong>, paste the link, and click <strong>Subscribe</strong>. Choose your settings and click <strong>OK</strong>.</p>
+        <p>Updates may take a little time to appear in your calendar.</p>
+        <p>More help: <a href="https://support.google.com/calendar/answer/37100?hl=en">Google’s subscription guide</a> · <a href="https://support.apple.com/102301">Apple’s subscription guide</a>.</p>
+      </details>
+
+
+
+    </section>
+
+  </main>
+
+
+  <script>
+    const calendarFrame = document.getElementById('events-calendar');
+    const viewSwitch = document.querySelector('.view-switch');
+    const viewButtons = viewSwitch.querySelectorAll('button');
+    viewSwitch.hidden = false;
+    viewButtons.forEach(button => button.addEventListener('click', () => {
+      if (button.getAttribute('aria-pressed') === 'true') return;
+      const url = new URL(calendarFrame.src);
+      url.searchParams.set('mode', button.dataset.view);
+      calendarFrame.src = url.href;
+      calendarFrame.title = button.dataset.view === 'MONTH'
+        ? 'Young Adults month calendar' : 'Young Adults upcoming events';
+      viewButtons.forEach(item => item.setAttribute('aria-pressed', String(item === button)));
+    }));
+
+    const copyButton = document.getElementById('copy-feed');
+    const calendarFeed = document.getElementById('calendar-feed');
+    const copyStatus = document.getElementById('copy-status');
+    copyButton.hidden = false;
+    copyButton.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(calendarFeed.value);
+        copyStatus.textContent = 'Calendar link copied. Paste it into your calendar app.';
+      } catch {
+        calendarFeed.focus();
+        calendarFeed.select();
+        calendarFeed.setSelectionRange(0, calendarFeed.value.length);
+        copyStatus.textContent = 'Link selected. Touch and hold the selection, then choose Copy.';
+      }
+    });
+  </script>
+
+</body>
+</html>
