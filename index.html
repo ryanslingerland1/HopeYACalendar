@@ -156,6 +156,11 @@
           <p class="small-note">For iPhone, iPad, and Mac.</p>
           <a class="subscribe-button"
             href="webcal://calendar.google.com/calendar/ical/a695850648b5ee85c394014f49b84228289fd2c40ee99bf6a668432cee709ed5%40group.calendar.google.com/public/basic.ics">Subscribe in Apple Calendar</a>
+          <button class="copy-button" id="copy-feed" type="button" hidden>Copy calendar link</button>
+          <p id="copy-status" class="small-note" role="status"></p>
+          <p class="small-note">Opens the wrong app? Copy the calendar link, then paste it into Apple Calendar:</p>
+          <p class="small-note"><strong>iPhone/iPad:</strong> Calendars → Add Calendar → Add Subscription Calendar.</p>
+          <p class="small-note"><strong>Mac:</strong> File → New Calendar Subscription.</p>
           <details class="setup-steps">
             <summary>How to subscribe</summary>
             <ol>
@@ -171,8 +176,6 @@
         <summary>Need to add it manually?</summary>
         <label for="calendar-feed">Copy this calendar subscription URL:</label>
         <textarea id="calendar-feed" readonly rows="4" spellcheck="false">https://calendar.google.com/calendar/ical/a695850648b5ee85c394014f49b84228289fd2c40ee99bf6a668432cee709ed5%40group.calendar.google.com/public/basic.ics</textarea>
-        <button class="copy-button" id="copy-feed" type="button" hidden>Copy calendar link</button>
-        <p id="copy-status" role="status"></p>
         <p><strong>Google:</strong> On a computer, open Google Calendar. Next to <strong>Other calendars</strong>, click <strong>+</strong>, then <strong>From URL</strong>. Paste the link and click <strong>Add calendar</strong>.</p>
         <p><strong>iPhone or iPad:</strong> In Calendar, open <strong>Calendars → Add Calendar → Add Subscription Calendar</strong>. Paste the link, tap <strong>Find</strong> (or <strong>Subscribe</strong> on older versions), then finish saving.</p>
         <p><strong>Mac:</strong> In Calendar, choose <strong>File → New Calendar Subscription</strong>, paste the link, and click <strong>Subscribe</strong>. Choose your settings and click <strong>OK</strong>.</p>
@@ -211,10 +214,11 @@
         await navigator.clipboard.writeText(calendarFeed.value);
         copyStatus.textContent = 'Calendar link copied. Paste it into your calendar app.';
       } catch {
+        calendarFeed.closest('details').open = true;
         calendarFeed.focus();
         calendarFeed.select();
         calendarFeed.setSelectionRange(0, calendarFeed.value.length);
-        copyStatus.textContent = 'Link selected. Touch and hold the selection, then choose Copy.';
+        copyStatus.textContent = 'Link selected below. Press Command+C on Mac or Ctrl+C on Windows, or touch and hold the selection and choose Copy.';
       }
     });
   </script>
